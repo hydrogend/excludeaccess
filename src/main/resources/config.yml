@@ -1,0 +1,5 @@
+license-key: ""
+download-url: "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-Country&license_key={KEY}&suffix=tar.gz"
+allowed-ips:
+  - ""
+check-only-allowed-ips: false

@@ -1,0 +1,23 @@
+name: ExcludeAccess
+version: '${version}'
+main: dev.hydrogen1.excludeaccess.ExcludeAccess
+api-version: '1.21'
+prefix: '&7[&bExcludeAccess&7] &r'
+authors:
+  - hydrogen
+description: 'Exclude ip specific players from your server.'
+commands:
+  excludeaccess:
+    description: 'Exclude ip specific players from your server.'
+    usage: '/excludeaccess reload'
+    permission: 'excludeaccess.command'
+    aliases:
+      - ea
+permissions:
+    excludeaccess.command:
+        description: 'Allow to use /excludeaccess command.'
+        default: op
+libraries:
+  - com.maxmind.geoip2:geoip2:4.2.0
+  - javatar:javatar:2.5
+  - com.github.seancfoley:ipaddress:5.5.0
