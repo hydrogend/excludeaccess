@@ -64,6 +64,7 @@ public final class LoginHandler implements Listener {
             }
             kick(event, "You are not allowed to join.");
             plugin.getLogger().info("Unknown Player " + event.getName() + " from " + addr.getHostAddress());
+            plugin.discordLog(event.getName() + " (" + addr.getHostAddress().substring(0,8) + ") のログインを拒否しました。");
             return;
         }
         try {
@@ -71,12 +72,14 @@ public final class LoginHandler implements Listener {
             val country = response.getCountry();
             if(!country.getIsoCode().equals("JP")) {
                 kick(event, "You are not allowed to join.");
+                plugin.discordLog(event.getName() + " (" + country.getIsoCode() + ") のログインを拒否しました。");
             }
             plugin.getLogger().info("Player " + event.getName() + " from " + country.getName());
         } catch (IOException | GeoIp2Exception e) {
             kick(event, "Failed to check your country.");
             plugin.getLogger().warning("Failed to check country: " + e.getMessage());
             plugin.getLogger().info("Player " + event.getName() + " from unknown country");
+            plugin.discordLog(event.getName() + " (不明) のログインを拒否しました。");
         }
     }
 

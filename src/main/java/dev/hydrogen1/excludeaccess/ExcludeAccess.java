@@ -1,12 +1,14 @@
 package dev.hydrogen1.excludeaccess;
 
+import club.minnced.discord.webhook.WebhookClient;
+import lombok.val;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
-public final class ExcludeAccess extends JavaPlugin implements CommandExecutor {
+public final class ExcludeAccess extends JavaPlugin {
     private LoginHandler loginHandler;
     @Override
     public void onEnable() {
@@ -30,5 +32,11 @@ public final class ExcludeAccess extends JavaPlugin implements CommandExecutor {
         }
         sender.sendMessage("Usage: /excludeaccess reload");
         return false;
+    }
+
+    public void discordLog(String message) {
+        try(val client = WebhookClient.withUrl(getConfig().getString("discord-webhook"))) {
+            client.send(message);
+        }
     }
 }

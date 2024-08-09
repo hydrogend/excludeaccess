@@ -3,3 +3,4 @@ download-url: "https://download.maxmind.com/app/geoip_download?edition_id=GeoLit
 allowed-ips:
   - ""
 check-only-allowed-ips: false
+discord-webhook: ""
