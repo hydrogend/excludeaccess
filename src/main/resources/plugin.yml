@@ -2,7 +2,7 @@ name: ExcludeAccess
 version: '${version}'
 main: dev.hydrogen1.excludeaccess.ExcludeAccess
 api-version: '1.21'
-prefix: '&7[&bExcludeAccess&7] &r'
+prefix: 'ExcludeAccess'
 authors:
   - hydrogen
 description: 'Exclude ip specific players from your server.'
