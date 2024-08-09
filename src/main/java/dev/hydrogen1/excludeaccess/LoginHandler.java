@@ -4,7 +4,6 @@ import com.ice.tar.TarEntry;
 import com.ice.tar.TarInputStream;
 import com.maxmind.geoip2.DatabaseReader;
 import com.maxmind.geoip2.exception.GeoIp2Exception;
-import inet.ipaddr.IPAddress;
 import inet.ipaddr.IPAddressString;
 import lombok.val;
 import net.kyori.adventure.text.Component;
@@ -14,7 +13,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
-import org.bukkit.event.player.PlayerPreLoginEvent;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -23,7 +21,6 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.FutureTask;
 import java.util.function.Predicate;
 import java.util.zip.GZIPInputStream;
 

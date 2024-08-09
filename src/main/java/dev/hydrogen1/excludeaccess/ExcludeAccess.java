@@ -3,7 +3,6 @@ package dev.hydrogen1.excludeaccess;
 import club.minnced.discord.webhook.WebhookClient;
 import lombok.val;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -35,7 +34,8 @@ public final class ExcludeAccess extends JavaPlugin {
     }
 
     public void discordLog(String message) {
-        try(val client = WebhookClient.withUrl(getConfig().getString("discord-webhook"))) {
+        if(getConfig().getString("discord-webhook", "").isEmpty()) return;
+        try(val client = WebhookClient.withUrl(getConfig().getString("discord-webhook", ""))) {
             client.send(message);
         }
     }
