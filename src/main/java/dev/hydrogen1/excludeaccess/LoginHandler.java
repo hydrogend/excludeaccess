@@ -46,9 +46,8 @@ public final class LoginHandler implements Listener {
     public void onLogin(AsyncPlayerPreLoginEvent event) {
         if(Bukkit.isWhitelistEnforced()) return;
         if(Bukkit.getWhitelistedPlayers().stream()
-                .map(OfflinePlayer::getName)
-                .filter(Objects::nonNull)
-                .anyMatch(player -> player.equals(event.getName()))) return;
+                .map(OfflinePlayer::getUniqueId)
+                .anyMatch(player -> player.equals(event.getUniqueId()))) return;
         val addr = event.getAddress();
         if(checkIfLocal(addr)) return;
         if(checkOnly) {
