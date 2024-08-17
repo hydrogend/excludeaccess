@@ -37,10 +37,9 @@ public final class LoginHandler implements Listener {
     }
 
     /**
-     * プレイヤーがログインしようとしたときに呼び出され、ログインの可否を確認する。
-     * ただし、ホワイトリストが有効な場合は何もしない。
-     * 加えて、ホワイトリストに登録されたプレイヤーの場合も何もしない。
-     * @param event イベント
+     * When a player tries to log in, check the country of the player.
+     * If the player is not from which you permit, kick the player.
+     * @param event The event
      */
     @EventHandler(priority = EventPriority.MONITOR)
     public void onLogin(AsyncPlayerPreLoginEvent event) {
@@ -67,7 +66,7 @@ public final class LoginHandler implements Listener {
         try {
             val response = reader.country(addr);
             val country = response.getCountry();
-            if(!country.getIsoCode().equals("JP")) {
+            if(!plugin.getConfig().getStringList("allowed-countries").contains(country.getIsoCode())) {
                 kick(event, "You are not allowed to join.");
                 plugin.discordLog(event.getName() + " (" + country.getIsoCode() + ") のログインを拒否しました。");
             }
@@ -81,8 +80,8 @@ public final class LoginHandler implements Listener {
     }
 
     /**
-     * データベースを読み込む。ただし、データベースが存在しない場合や前回のダウンロードから1月以上経過している場合はダウンロードする。
-     * なお、config.ymlのcheck-only-allowed-ipsがtrueの場合は、IPアドレスが指定されたリストに含まれているかのみを確認する。
+     * Load the database. If the database does not exist or it has been more than a month since the last download, download it.
+     * However, if check-only-allowed-ips in config.yml is true, only check if the IP address is included in the specified list.
      */
     void load() {
         checkOnly = plugin.getConfig().getBoolean("check-only-allowed-ips",false);
@@ -112,7 +111,7 @@ public final class LoginHandler implements Listener {
     }
 
     /**
-     * データベースをダウンロードする。
+     * Download the database from the specified URL.
      */
     private void downloadDatabase() {
         var url = plugin.getConfig().getString("download-url", "");
@@ -152,11 +151,11 @@ public final class LoginHandler implements Listener {
     }
 
     /**
-     * プレイヤーをキックする。
-     * このメゾットが存在するのは、処理が長引いている場合にプレイヤーを確実にキックするためである。
+     * Kick the player with the specified reason.
+     * When the process is delayed, this method kick the player, surely.
      *
-     * @param event イベント
-     * @param reason 理由
+     * @param event The event
+     * @param reason The reason
      */
     private void kick(AsyncPlayerPreLoginEvent event, String reason) {
         val msg = Component.text(reason);
@@ -168,15 +167,15 @@ public final class LoginHandler implements Listener {
     }
 
     /**
-     * ローカルアドレスかどうかを確認する。
-     * @param address アドレス
-     * @return ローカルアドレスかどうか
+     * Check if the address is local.
+     * @param address The address
+     * @return If the address is local, true
      */
     private boolean checkIfLocal(InetAddress address) {
         if (address.isAnyLocalAddress() || address.isLoopbackAddress()) {
             return true;
         }
-        // インターフェースに割り当てられたアドレスかどうかを念のため確認する
+        // Check if the address is a site-local address
         try {
             return NetworkInterface.getByInetAddress(address) != null;
         } catch (SocketException e) {

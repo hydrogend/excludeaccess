@@ -1,6 +1,8 @@
 license-key: ""
 download-url: "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-Country&license_key={KEY}&suffix=tar.gz"
 allowed-ips:
-  - ""
+  - "127.0.0.0/8"
 check-only-allowed-ips: false
 discord-webhook: ""
+permit-countries:
+  - "US"
