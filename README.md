@@ -17,6 +17,8 @@ The plugin can be configured in the `config.php` file. The following options are
 - `check-only-allowed-ips`: If set to `true`, only the IP addresses in the `allowed-ips` array are allowed to login.
 - `discord-webhook`: The Discord webhook URL to send notifications to.
 - `download-url`: The URL to download the GeoLite2 database from.
+- `temporarily-ban-threshold`: The number of failed login attempts before temporarily banning the user.
+- `temporarily-ban-days`: The number of days to temporarily ban the user for.
 
 ## Permissions
 
