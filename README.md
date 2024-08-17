@@ -1,6 +1,7 @@
 # Exclude Access
 
 Simple plugin to exclude access from certain countries or IP addresses.
+You can also temporarily ban users after a certain number of failed login attempts.
 
 ## Installation
 

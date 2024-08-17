@@ -1,10 +1,27 @@
+# This is the configuration file for the plugin.
+# You can change the values to your liking.
+
+# The license key for the GeoLite2 database.
 license-key: ""
+# The download URL for the GeoLite2 database.
 download-url: "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-Country&license_key={KEY}&suffix=tar.gz"
+# A list of allowed IPs.
+# This section have no effect if check-only-allowed-ips is set to false.
 allowed-ips:
   - "127.0.0.0/8"
+# Whether to check only allowed IPs.
+# If set to false, the plugin will check countries.
 check-only-allowed-ips: false
+# Discord webhook URL.
+# If set, the plugin will send a message to the webhook when a player is excluded.
 discord-webhook: ""
+# A list of permitted countries.
 permit-countries:
   - "US"
+# Temporary ban threshold.
+# If a player is excluded more than this number of times, they will be temporarily banned.
+# Set to 0 to disable.
 temporarily-ban-threshold: 3
+# Temporary ban days.
+# The number of days to temporarily ban a player.
 temporarily-ban-days: 1

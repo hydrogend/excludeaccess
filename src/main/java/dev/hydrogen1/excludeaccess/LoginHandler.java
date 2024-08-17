@@ -132,7 +132,7 @@ public final class LoginHandler implements Listener {
             val in = new TarInputStream(new GZIPInputStream(conn.getInputStream()));
             TarEntry entry;
             while((entry = in.getNextEntry()) != null) {
-                // データベースファイルを見つけたら保存する
+                // Find the database file
                 if(!entry.isDirectory() && entry.getName().endsWith(".mmdb")) {
                     try(val out = new FileOutputStream(dbFile)) {
                         byte[] buffer = new byte[2048];
@@ -166,6 +166,7 @@ public final class LoginHandler implements Listener {
             player.kick(msg);
         }
         val max = plugin.getConfig().getInt("temporarily-ban-threshold", 3);
+        if(max == 0) return;
         if(loginAttempts.get(event.getUniqueId()) >= max) {
             val days = plugin.getConfig().getLong("temporarily-ban-days", 1L);
             val term = Instant.now().plusSeconds(days * 24 * 60 * 60);
