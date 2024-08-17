@@ -6,3 +6,5 @@ check-only-allowed-ips: false
 discord-webhook: ""
 permit-countries:
   - "US"
+temporarily-ban-threshold: 3
+temporarily-ban-days: 1

@@ -5,6 +5,7 @@ import com.ice.tar.TarInputStream;
 import com.maxmind.geoip2.DatabaseReader;
 import com.maxmind.geoip2.exception.GeoIp2Exception;
 import inet.ipaddr.IPAddressString;
+import io.papermc.paper.ban.BanListType;
 import lombok.val;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -18,9 +19,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.time.Instant;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.zip.GZIPInputStream;
 
@@ -30,6 +30,7 @@ public final class LoginHandler implements Listener {
     private final File dbFile;
     private boolean checkOnly;
     private final List<IPAddressString> masks = new ArrayList<>();
+    private final Map<UUID,Integer> loginAttempts = new HashMap<>();
     LoginHandler(ExcludeAccess plugin) {
         this.plugin = plugin;
         dbFile = new File(plugin.getDataFolder(), "GeoLite2-Country.mmdb");
@@ -160,9 +161,19 @@ public final class LoginHandler implements Listener {
     private void kick(AsyncPlayerPreLoginEvent event, String reason) {
         val msg = Component.text(reason);
         event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, msg);
+        loginAttempts.put(event.getUniqueId(), loginAttempts.get(event.getUniqueId()) == null ? 1 : loginAttempts.get(event.getUniqueId()) + 1);
         val player = Bukkit.getPlayer(event.getName());
         if(player != null) {
             player.kick(msg);
+        }
+        val max = plugin.getConfig().getInt("temporarily-ban-threshold", 3);
+        if(loginAttempts.get(event.getUniqueId()) >= max) {
+            val days = plugin.getConfig().getLong("temporarily-ban-days", 1L);
+            val term = Instant.now().plusSeconds(days * 24 * 60 * 60);
+            Bukkit.getBanList(BanListType.PROFILE)
+                    .addBan(event.getPlayerProfile(), "You are not allowed to join.", term, "ExcludeAccess");
+            loginAttempts.remove(event.getUniqueId());
+            plugin.getLogger().warning("Temporarily banned " + event.getName() + " for " + days + " days.");
         }
     }
 
