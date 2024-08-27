@@ -23,7 +23,7 @@ public final class ExcludeAccess extends JavaPlugin {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if(args.length > 1 && args[0].equalsIgnoreCase("reload")) {
+        if(args.length == 1 && args[0].equalsIgnoreCase("reload")) {
             reloadConfig();
             loginHandler.load();
             sender.sendMessage("Config reloaded.");

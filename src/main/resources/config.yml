@@ -16,7 +16,7 @@ check-only-allowed-ips: false
 # If set, the plugin will send a message to the webhook when a player is excluded.
 discord-webhook: ""
 # A list of permitted countries.
-permit-countries:
+allowed-countries:
   - "US"
 # Temporary ban threshold.
 # If a player is excluded more than this number of times, they will be temporarily banned.
