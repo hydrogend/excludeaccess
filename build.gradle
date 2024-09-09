@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'dev.hydrogen1'
-version = '1.4.1'
+version = '1.5.0'
 
 repositories {
     mavenCentral()
@@ -24,7 +24,7 @@ dependencies {
     implementation 'com.maxmind.geoip2:geoip2:4.2.0'
     implementation 'javatar:javatar:2.5'
     implementation 'com.github.seancfoley:ipaddress:5.5.0'
-    implementation 'club.minnced:discord-webhooks:0.8.4'
+    compileOnly 'net.luckperms:api:5.4'
 
     testCompileOnly "org.projectlombok:lombok:1.18.34"
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
