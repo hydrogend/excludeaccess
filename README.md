@@ -24,9 +24,6 @@ The plugin can be configured in the `config.php` file. The following options are
 ## Permissions
 
 `excludeaccess.command` - Allows the user to use the `/excludeaccess` command. Defaults to only operators.
-`excludeaccess.bypass` - Allows the user to bypass the restrictions. Defaults to only operators.
-
-Checking for the `excludeaccess.bypass` permission is unavailable if LuckPerms is not installed.
 
 ## Commands
 
