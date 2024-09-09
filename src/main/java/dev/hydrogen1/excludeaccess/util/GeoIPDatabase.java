@@ -16,6 +16,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
+import java.util.logging.Level;
 import java.util.zip.GZIPInputStream;
 
 public final class GeoIPDatabase {
@@ -72,7 +73,8 @@ public final class GeoIPDatabase {
             }
             in.close();
         } catch (IOException | URISyntaxException e) {
-            plugin.getLogger().warning("Failed to download database: " + e.getMessage());
+            plugin.getLogger().warning("Failed to download database");
+            plugin.getLogger().log(Level.WARNING, e.getMessage(), e);
         }
     }
     public static Country getCountry(InetAddress ip) throws IOException, GeoIp2Exception {
