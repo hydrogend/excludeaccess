@@ -5,7 +5,6 @@ import lombok.val;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.net.InetAddress;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;

@@ -3,7 +3,6 @@ package dev.hydrogen1.excludeaccess;
 import com.maxmind.geoip2.exception.GeoIp2Exception;
 import dev.hydrogen1.excludeaccess.util.GeoIPDatabase;
 import dev.hydrogen1.excludeaccess.util.PermissionManager;
-import inet.ipaddr.IPAddressString;
 import io.papermc.paper.ban.BanListType;
 import lombok.val;
 import net.kyori.adventure.text.Component;
@@ -18,7 +17,6 @@ import java.io.IOException;
 import java.net.*;
 import java.time.Instant;
 import java.util.*;
-import java.util.function.Predicate;
 
 public final class LoginHandler implements Listener {
     private final ExcludeAccess plugin;
@@ -77,12 +75,12 @@ public final class LoginHandler implements Listener {
      * @param reason The reason
      */
     private void kick(AsyncPlayerPreLoginEvent event, String reason) {
-        val msg = Component.text(reason);
-        event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, msg);
+        val msg = Component.translatable("multiplayer.disconnect.not_whitelisted");
+        event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST, msg);
         loginAttempts.put(event.getUniqueId(), loginAttempts.get(event.getUniqueId()) == null ? 1 : loginAttempts.get(event.getUniqueId()) + 1);
-        val player = Bukkit.getPlayer(event.getName());
+        val player = Bukkit.getPlayer(event.getUniqueId());
         if(player != null) {
-            player.kick(msg);
+            player.kick(Component.text(reason));
         }
         val max = plugin.getConfig().getInt("temporarily-ban-threshold", 3);
         if(max == 0) return;
