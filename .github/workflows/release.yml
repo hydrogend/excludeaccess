@@ -31,6 +31,11 @@ jobs:
           chmod +x gradlew
           ./gradlew build --stacktrace
 
+      - name: Make artifacts.jar
+        run: |
+          cp build/libs/ExcludeAccess-*.jar build/libs/artifacts.jar
+          rm build/libs/ExcludeAccess-*.jar
+
       - name: Release plugin
         id: create-release
         uses: actions/create-release@v1.1.4
@@ -48,6 +53,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: build/libs/*.jar
+          asset_path: build/libs/artifacts.jar
           asset_name: ExcludeAccess.jar
           asset_content_type: application/java-archive
