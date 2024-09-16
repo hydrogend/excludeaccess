@@ -32,13 +32,13 @@ public final class PermissionManager {
     }
 
     /**
-     * Check if the player has the permission. If LuckPerms is not found, this method always returns false.
+     * Check if the player has the permission. If LuckPerms is not found, this method will return true if the player is an operator.
      * @param uuid The player's UUID
      * @param permission The permission
      * @return Whether the player has the permission
      */
     public static boolean hasPermission(UUID uuid, String permission) {
-        if(!isLuckPermsEnabled) return false;
+        if(!isLuckPermsEnabled) return Bukkit.getOperators().stream().anyMatch(op -> op.getUniqueId().equals(uuid));
         val user =  perm.getUserManager().getUser(uuid);
         if(user == null) return false;
         return user.getCachedData().getPermissionData().checkPermission(permission).asBoolean();
