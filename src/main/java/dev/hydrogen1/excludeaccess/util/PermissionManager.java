@@ -39,7 +39,7 @@ public final class PermissionManager {
      */
     public static boolean hasPermission(UUID uuid, String permission) {
         if(!isLuckPermsEnabled) return Bukkit.getOperators().stream().anyMatch(op -> op.getUniqueId().equals(uuid));
-        val user =  perm.getUserManager().getUser(uuid);
+        val user = perm.getUserManager().getUser(uuid);
         if(user == null) return false;
         return user.getCachedData().getPermissionData().checkPermission(permission).asBoolean();
     }
