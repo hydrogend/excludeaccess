@@ -3,6 +3,8 @@
 
 # The license key for the GeoLite2 database.
 license-key: ""
+# The username for downloading the GeoLite2 database.
+license-username: ""
 # The download URL for the GeoLite2 database.
 download-url: "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-Country&license_key={KEY}&suffix=tar.gz"
 # A list of allowed IPs.

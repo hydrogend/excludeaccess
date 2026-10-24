@@ -12,10 +12,13 @@ import org.bukkit.plugin.Plugin;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.URI;
-import java.net.URISyntaxException;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
+import java.util.Base64;
 import java.util.logging.Level;
 import java.util.zip.GZIPInputStream;
 
@@ -26,12 +29,20 @@ public final class GeoIPDatabase {
     public static void load(Plugin plugin) {
         // Load the GeoIP database
         dbFile = plugin.getDataPath().resolve("GeoLite2-Country.mmdb");
-        if(Files.exists(dbFile)) {
-            downloadDatabase(plugin);
+        val uri = plugin.getConfig().getString("download-url", "");
+        val username = plugin.getConfig().getString("license-username", "");
+        val password = plugin.getConfig().getString("license-key", "");
+        val encodedCredentials = Base64.getEncoder().encodeToString((username + ":" + password).getBytes());
+        if(!isDatabaseDownloadable(uri, encodedCredentials)) {
+            plugin.getLogger().warning("GeoIP database is not downloadable. Please check your license key in config.yml.");
+            return;
+        }
+        if(!Files.exists(dbFile)) {
+            downloadDatabase(plugin, uri, encodedCredentials);
         }
         val diff = Instant.now().toEpochMilli() - dbFile.toFile().lastModified();
         if(diff > 30L * 24 * 60 * 60 * 1000) {
-            downloadDatabase(plugin);
+            downloadDatabase(plugin, uri, encodedCredentials);
         }
         try {
             if(reader != null) reader.close();
@@ -40,23 +51,15 @@ public final class GeoIPDatabase {
             plugin.getLogger().warning("Failed to load database: " + e.getMessage());
         }
     }
-    private static void downloadDatabase(Plugin plugin) {
-        var url = plugin.getConfig().getString("download-url", "");
-        if(url.isEmpty()) {
-            plugin.getLogger().warning("No download URL specified in config.yml");
-            return;
-        }
-        val key = plugin.getConfig().getString("license-key", "");
-        if(key.isEmpty()) {
-            plugin.getLogger().warning("No download key specified in config.yml");
-            return;
-        }
-        url = url.replace("{KEY}", key);
-        try {
-            val conn = new URI(url).toURL().openConnection();
-            conn.setConnectTimeout(10000);
-            conn.connect();
-            val in = new TarInputStream(new GZIPInputStream(conn.getInputStream()));
+    private static void downloadDatabase(Plugin plugin, String uri, String encodedCredentials) {
+        val httpreq = HttpRequest.newBuilder(URI.create(uri))
+                .GET()
+                .header("Authorization", "Basic " + encodedCredentials)
+                .build();
+        try(val client = HttpClient.newHttpClient();
+            val in = new TarInputStream(new GZIPInputStream(
+                    client.send(httpreq, HttpResponse.BodyHandlers.ofInputStream()).body()
+            ))) {
             TarEntry entry;
             while((entry = in.getNextEntry()) != null) {
                 // Find the database file
@@ -71,10 +74,21 @@ public final class GeoIPDatabase {
                     break;
                 }
             }
-            in.close();
-        } catch (IOException | URISyntaxException e) {
+        } catch (IOException | InterruptedException e) {
             plugin.getLogger().warning("Failed to download database");
             plugin.getLogger().log(Level.WARNING, e.getMessage(), e);
+        }
+    }
+    private static boolean isDatabaseDownloadable(String url, String encodedCredentials) {
+        val httpreq = HttpRequest.newBuilder(URI.create(url))
+                .HEAD()
+                .header("Authorization", "Basic " + encodedCredentials)
+                .build();
+        try (val client = HttpClient.newHttpClient()) {
+            val res = client.send(httpreq, HttpResponse.BodyHandlers.discarding());
+            return res.statusCode() == 200;
+        } catch (IOException | InterruptedException e) {
+            return false;
         }
     }
     public static Country getCountry(InetAddress ip) throws IOException, GeoIp2Exception {

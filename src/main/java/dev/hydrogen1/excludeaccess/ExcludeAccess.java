@@ -21,7 +21,9 @@ public final class ExcludeAccess extends JavaPlugin {
     public void onEnable() {
         saveDefaultConfig();
         getServer().getPluginManager().registerEvents(new LoginHandler(this), this);
-        GeoIPDatabase.load(this);
+        if(!getConfig().getBoolean("check-only-allowed-ips", false)) {
+            GeoIPDatabase.load(this);
+        }
         filter = new IPFilter(getConfig().getStringList("allowed-ips"));
         client = new SimpleWebhook(getConfig().getString("discord-webhook", ""));
         PermissionManager.init(this);
@@ -45,7 +47,9 @@ public final class ExcludeAccess extends JavaPlugin {
 
     private void reloadAll() {
         reloadConfig();
-        GeoIPDatabase.load(this);
+        if(!getConfig().getBoolean("check-only-allowed-ips", false)) {
+            GeoIPDatabase.load(this);
+        }
         filter = new IPFilter(getConfig().getStringList("allowed-ips"));
         if(getConfig().getString("discord-webhook", "").isEmpty()) {
             client = null;
